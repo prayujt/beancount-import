@@ -13,15 +13,13 @@ connection = Connection(
     config["SECRET"]
 )
 
-# keep the end date always one ahead of the current date to retrieve
-# every transaction to date
-
-
-# for each access token supplied, map the institution name to that token
-
-for transaction in connection.get_transactions("2022-09-20"):
+for transaction in connection.get_transactions(start_date):
     name = transaction['name'] if transaction['merchant_name'] is None \
         else transaction['merchant_name']
-    print(transaction['date'], name, transaction['amount'])
-    # print(transaction['category'], name)
-print()
+
+    print(
+        transaction['institution'],
+        transaction['date'],
+        name,
+        transaction['amount']
+    )

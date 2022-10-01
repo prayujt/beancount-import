@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#
+
 from datetime import datetime, timedelta
 
 import plaid
@@ -15,6 +15,7 @@ from plaid.model.accounts_get_request import AccountsGetRequest
 
 from plaid.model.institutions_get_by_id_request \
     import InstitutionsGetByIdRequest
+
 
 class Connection:
     access_tokens = {}
@@ -35,6 +36,7 @@ class Connection:
             request = AccountsGetRequest(access_token=token)
             response = self.client.accounts_get(request)
             institution_id = response['item']['institution_id']
+
             request = InstitutionsGetByIdRequest(
                 institution_id=institution_id,
                 country_codes=[CountryCode("US")],
@@ -44,7 +46,10 @@ class Connection:
 
     # return transactions across all accounts sorted by date
     def get_transactions(self, start_date):
+        # keep the end date always one ahead of the current date to retrieve
+        # every transaction to date
         end_date = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
+        transactions = []
 
         for (institution, access_token) in self.access_tokens.items():
             request = TransactionsGetRequest(
@@ -53,7 +58,17 @@ class Connection:
                 end_date=datetime.strptime(end_date, '%Y-%m-%d').date(),
             )
             response = self.client.transactions_get(request)
-            transactions = response['transactions']
+            for transaction in response['transactions']:
+                temp = {
+                    'amount': transaction['amount'],
+                    'category': transaction['category'],
+                    'date': transaction['date'],
+                    'institution': institution,
+                    'location': transaction['location'],
+                    'merchant_name': transaction['merchant_name'],
+                    'name': transaction['name'],
+                }
+                transactions.append(temp)
 
             while len(transactions) < response['total_transactions']:
                 options = TransactionsGetRequestOptions()
@@ -66,7 +81,18 @@ class Connection:
                     options=options
                 )
                 response = self.client.transactions_get(request)
-                transactions += response['transactions']
+                for transaction in response['transactions']:
+                    temp = {
+                        'amount': transaction['amount'],
+                        'category': transaction['category'],
+                        'date': transaction['date'],
+                        'institution': institution,
+                        'location': transaction['location'],
+                        'merchant_name': transaction['merchant_name'],
+                        'name': transaction['name'],
+                    }
+                    transactions.append(temp)
 
-            transactions = reversed(transactions)
-            return transactions
+        # sort merged list of transactions across accounts by date
+        transactions.sort(key=lambda x: x['date'])
+        return transactions
