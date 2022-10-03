@@ -1,0 +1,21 @@
+{
+    "banks": {
+        "Bank of America": "BoA"
+    },
+    "credit_cards": {
+        "Chase": "Chase",
+        "Discover": "Discover"
+    },
+    "categories": {
+        "Food and Drink": "Food",
+        "Restaurants": "Food",
+        "Fast Food": "Food",
+        "Shops": "Groceries",
+        "Supermarkets and Groceries": "Groceries",
+        "Healthcare": "Health",
+        "Healthcare Services": "Health",
+        "Colleges and Universities": "Education",
+        "Education": "Education",
+        "Community": "Education"
+    }
+}

@@ -8,5 +8,7 @@ Requires a .env file within the main directory to be set with the following envi
 * `ACCESS_TOKENS` -> Access tokens for Plaid links, separated by a space (more detail below)
 * `START_DATE` -> Date to begin tracking transactions (%Y-%m-%d)
 
+The names for the accounts that will be generated from the script need to be customized in an `accounts.json` file. An example of this file has been included to show the structure of the file, and some of the possible options.
+
 To retrieve the access tokens for linked accounts, clone [Plaid's Quickstart](https://github.com/plaid/quickstart) repository, and follow the instructions in the README to link your accounts and get access tokens. If you have more than one account, separate each access code with a space. The type of account that the access code refers to (eg. Discover, Chase) is determined by the API when connecting to the account.
 
