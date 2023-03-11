@@ -1,4 +1,6 @@
 # Beancount Importer
+**NOTE: This project is discontinued because the Chase integration with Plaid does not work with the free tier.**
+
 This repository will utilize the Plaid API to generate [beancount](https://github.com/beancount/beancount) files to automate the process of tracking personal expenses from both bank accounts and credit cards. Using the API, we can easily get transaction information, categorize transactions by their type (eg. restaurants, groceries, etc..), and synchronize this information across multiple types of accounts into one beancount file.
 
 ## Setup
