@@ -4,7 +4,8 @@
     },
     "credit_cards": {
         "Chase": "Chase",
-        "Discover": "Discover"
+        "Discover": "Discover",
+        "American Express": "Amex"
     },
     "categories": {
         "Food and Drink": "Food",

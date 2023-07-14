@@ -3,7 +3,6 @@
 from dotenv import dotenv_values
 from connection import Connection
 import json
-import sys
 
 config = dotenv_values()
 

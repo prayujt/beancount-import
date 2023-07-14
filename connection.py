@@ -7,9 +7,9 @@ from plaid.api import plaid_api
 
 from plaid.model.country_code import CountryCode
 
-from plaid.model.transactions_get_request_options \
-    import TransactionsGetRequestOptions
-from plaid.model.transactions_get_request import TransactionsGetRequest
+from plaid.model.transactions_sync_request_options \
+    import TransactionsSyncRequestOptions
+from plaid.model.transactions_sync_request import TransactionsSyncRequest
 
 from plaid.model.accounts_get_request import AccountsGetRequest
 
@@ -32,7 +32,7 @@ class Connection:
         api_client = plaid.ApiClient(configuration)
         self.client = plaid_api.PlaidApi(api_client)
 
-        for token in access_tokens.split(' '):
+        for token in access_tokens.split(','):
             request = AccountsGetRequest(access_token=token)
             response = self.client.accounts_get(request)
             institution_id = response['item']['institution_id']
@@ -48,17 +48,19 @@ class Connection:
     def get_transactions(self, start_date):
         # keep the end date always one ahead of the current date to retrieve
         # every transaction to date
-        end_date = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
         transactions = []
+        options = TransactionsSyncRequestOptions(
+            include_personal_finance_category=True
+        )
 
         for (institution, access_token) in self.access_tokens.items():
-            request = TransactionsGetRequest(
+            request = TransactionsSyncRequest(
                 access_token=access_token,
-                start_date=datetime.strptime(start_date, '%Y-%m-%d').date(),
-                end_date=datetime.strptime(end_date, '%Y-%m-%d').date(),
+                cursor='',
+                options=options
             )
-            response = self.client.transactions_get(request)
-            for transaction in response['transactions']:
+            response = self.client.transactions_sync(request)
+            for transaction in response['added']:
                 temp = {
                     'amount': transaction['amount'],
                     'category': transaction['category'],
@@ -69,29 +71,6 @@ class Connection:
                     'name': transaction['name'],
                 }
                 transactions.append(temp)
-
-            while len(transactions) < response['total_transactions']:
-                options = TransactionsGetRequestOptions()
-                options.offset = len(transactions)
-
-                request = TransactionsGetRequest(
-                    access_token=access_token,
-                    start_date=datetime.strptime(start_date, '%Y-%m-%d').date(),
-                    end_date=datetime.strptime(end_date, '%Y-%m-%d').date(),
-                    options=options
-                )
-                response = self.client.transactions_get(request)
-                for transaction in response['transactions']:
-                    temp = {
-                        'amount': transaction['amount'],
-                        'category': transaction['category'],
-                        'date': transaction['date'],
-                        'institution': institution,
-                        'location': transaction['location'],
-                        'merchant_name': transaction['merchant_name'],
-                        'name': transaction['name'],
-                    }
-                    transactions.append(temp)
 
         # sort merged list of transactions across accounts by date
         transactions.sort(key=lambda x: x['date'])
