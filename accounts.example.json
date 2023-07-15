@@ -1,0 +1,51 @@
+{
+    "accounts": {
+        "Bank of America": {
+            "alias": "BoA",
+            "accounts": [
+                {
+                    "mask": "xxxx",
+                    "alias": "Checking"
+                },
+                {
+                    "mask": "xxxx",
+                    "alias": "Savings"
+                }
+            ]
+        },
+        "Chase": {
+            "alias": "Chase",
+            "accounts": [
+                {
+                    "mask": "xxxx",
+                    "alias": "FreedomUnlimited"
+                },
+                {
+                    "mask": "xxxx",
+                    "alias": "Checking"
+                }
+            ]
+        },
+        "TD Ameritrade": {
+            "alias": "Ameritrade",
+            "accounts": [
+                {
+                    "mask": "xxxx",
+                    "alias": "Brokerage"
+                }
+            ]
+        }
+    },
+    "categories": {
+        "Food and Drink": "Food",
+        "Restaurants": "Food",
+        "Fast Food": "Food",
+        "Shops": "Groceries",
+        "Supermarkets and Groceries": "Groceries",
+        "Healthcare": "Health",
+        "Healthcare Services": "Health",
+        "Colleges and Universities": "Education",
+        "Education": "Education",
+        "Community": "Education"
+    }
+}

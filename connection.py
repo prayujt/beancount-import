@@ -44,6 +44,14 @@ class Connection:
             response = self.client.institutions_get_by_id(request)
             self.access_tokens[response['institution']['name']] = token
 
+    # return accounts for a specific institution
+    def get_accounts(self, institution):
+        request = AccountsGetRequest(
+            access_token=self.access_tokens[institution]
+        )
+        response = self.client.accounts_get(request)
+        return response['accounts']
+
     # return transactions across all accounts sorted by date
     def get_transactions(self, start_date):
         # keep the end date always one ahead of the current date to retrieve
