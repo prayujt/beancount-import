@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-from datetime import datetime, timedelta
-
 import plaid
 from plaid.api import plaid_api
 

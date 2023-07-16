@@ -29,26 +29,12 @@ text = ""
 for institution in connection.access_tokens.keys():
     accounts = connection.get_accounts(institution)
     for account in accounts:
-        print(account)
-        if account['type'] == 'credit':
-            pass
-            # text += "{0} open Liabilities:{institution}:{account['name']}"
-        elif account['type'] == 'depository':
-            pass
-            # text += "{0} open Assets:{institution}:{account['name']}"
-
-
-#     if institution in banks:
-#         text += "{0} open Assets:{1}\n".format(
-#             start_date,
-#             banks[institution] + ":Checking"
-#         )
-#     else:
-#         text += "{0} open Liabilities:Credit:{1}\n".format(
-#             start_date,
-#             credit_cards[institution]
-#         )
-# text += '\n'
+        account_name = [acc['alias'] for acc in custom_accounts[institution]['accounts'] if acc['mask'] == account['mask']][0]
+        if account['type'].value == 'credit':
+            text += f"{start_date} open {'Liabilities:Credit'}:{custom_accounts[institution]['alias']}:{account_name}\n"
+        elif account['type'].value == 'depository':
+            text += f"{start_date} open {'Assets'}:{custom_accounts[institution]['alias']}:{account_name}\n"
+text += '\n'
 
 # for transaction in connection.get_transactions(start_date):
 #     name = transaction['name'] if transaction['merchant_name'] is None \
