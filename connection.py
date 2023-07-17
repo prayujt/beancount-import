@@ -60,23 +60,30 @@ class Connection:
         )
 
         for (institution, access_token) in self.access_tokens.items():
-            request = TransactionsSyncRequest(
-                access_token=access_token,
-                cursor='',
-                options=options
-            )
-            response = self.client.transactions_sync(request)
-            for transaction in response['added']:
-                temp = {
-                    'amount': transaction['amount'],
-                    'category': transaction['category'],
-                    'date': transaction['date'],
-                    'institution': institution,
-                    'location': transaction['location'],
-                    'merchant_name': transaction['merchant_name'],
-                    'name': transaction['name'],
-                }
-                transactions.append(temp)
+            next_cursor = ''
+            has_more = True
+
+            while has_more:
+                request = TransactionsSyncRequest(
+                    access_token=access_token,
+                    cursor=next_cursor,
+                    options=options
+                )
+                response = self.client.transactions_sync(request)
+                for transaction in response['added']:
+                    temp = {
+                        'amount': transaction['amount'],
+                        'category': transaction['category'],
+                        'date': transaction['date'],
+                        'institution': institution,
+                        'location': transaction['location'],
+                        'merchant_name': transaction['merchant_name'],
+                        'name': transaction['name'],
+                    }
+                    transactions.append(temp)
+
+                next_cursor = response['next_cursor']
+                has_more = response['has_more']
 
         # sort merged list of transactions across accounts by date
         transactions.sort(key=lambda x: x['date'])
